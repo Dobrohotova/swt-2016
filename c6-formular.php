@@ -20,12 +20,14 @@ $zbor = explode(';', $read);
 
 fclose($filehandle);   
 
+$counter = 1;
+
 
 
 ?>
 
 <ul>
 	<?php foreach ($zbor as $val) { ?>
-	<li><?=$val ?></li>
+	<li><?=$counter++.'. '.$val ?></li>
 	<?php } ?>
 </ul>
