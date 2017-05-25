@@ -15,6 +15,34 @@ $query_blogposts = $db->prepare($sql_blogposts);
 $query_blogposts->execute();
 $query_blogposts_result = $query_blogposts->fetchAll(PDO::FETCH_ASSOC);
 
+if(isset($_GET['id'])){
+	echo 'EDIT MODE';
+	$form_url = 'blogposts_edit.php';
+
+	$sql_bp = 'select * from blogposts where id = :id';
+	$query_bp = $db->prepare($sql_bp);
+	$query_bp->bindValue(':id', $_GET['id']);
+	$query_bp->execute();
+	$res_bp = $query_bp->fetchAll(PDO::FETCH_ASSOC);
+
+	$input_title = $res_bp[0]['title'];
+	$input_content = $res_bp[0]['content'];
+	$input_date = $res_bp[0]['publish_date'];
+	$input_id_category = $res_bp[0]['id_category'];
+	$input_image = $res_bp[0]['image'];
+} else {
+	echo 'INSERT MODE';
+	$form_url = 'blogposts_add.php';
+	$input_title = '';
+	$input_content = '';
+	$input_date = '';
+	$input_id_category = '';
+	$input_image = '';
+}
+
+
+
+
 
  ?>
  <!DOCTYPE html>
@@ -23,12 +51,12 @@ $query_blogposts_result = $query_blogposts->fetchAll(PDO::FETCH_ASSOC);
  	<title></title>
  </head>
  <body>
- 	<form action="blogposts_add.php" method="post" enctype="multipart/form-data">
- 		<input type="text" name="title" placeholder="title">
+ 	<form action="<?=$form_url?>" method="post" enctype="multipart/form-data">
+ 		<input type="text" name="title" placeholder="title" value="<?=$input_title?>">
  		<br/><br/>
- 		<textarea name="content" placeholder="content"></textarea>
+ 		<textarea name="content" placeholder="content"><?=$input_content?></textarea>
  		<br/><br/>
- 		<input type="date" name="publish_date">
+ 		<input type="date" name="publish_date" value="<?=date('Y-m-d', strtotime($input_date))?>">
  		<br/><br/>
  		<input type="file" name="image">
  		<br/><br/>
@@ -62,7 +90,9 @@ $query_blogposts_result = $query_blogposts->fetchAll(PDO::FETCH_ASSOC);
  				<td><?=$row['image']?></td>
  				<td><?=$row['id_category']?></td>
 
- 				<td><?=$row['id']?></td>
+ 				<td>
+ 					<a href="blogposts.php?id=<?=$row['id']?>">[EDIT]</a>
+ 				</td>
  				<td>
  					<a href="blogposts_delete.php?id=<?=$row['id']?>">[DELETE]</a>
  				</td>
